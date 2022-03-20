@@ -13,6 +13,9 @@ from app.forms import PropertyForm
 from app.model import PropertyInfo
 from flask_wtf.csrf import CSRFProtect
 
+
+csrf = CSRFProtect(app)
+
 ###
 # Routing for your application.
 ###
@@ -29,7 +32,7 @@ def about():
     return render_template('about.html', name="Mary Jane")
 
 
-@app.route('/property', methods=["GET", "POST"])
+@app.route('/properties/create', methods=["GET", "POST"])
 def property1():
     form = PropertyForm()
     if request.method == 'POST':
@@ -52,13 +55,13 @@ def property1():
         flash('Your Property Has been Uploaded!','success')
         return redirect(url_for('properties'))
             
-    return render_template('property.html', form=form)
+    return render_template('property-form.html', form=form)
 
 
-@app.route('/property/<propertyid>')
+@app.route('/properties/<propertyid>')
 def propid(propertyid):
     properties = PropertyInfo.query.filter_by(id = propertyid).first()
-    return render_template('property_by_id.html',properties=properties)
+    return render_template('property.html',properties=properties)
 
 
 @app.route('/properties')
