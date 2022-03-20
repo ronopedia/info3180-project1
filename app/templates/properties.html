@@ -2,26 +2,29 @@
 
 {% block main %}
 
-<div class="property-card">
+{% include 'flash_messages.html' %}
 
-    <div>
-        <img class="single" src="{{ url_for('get_image', filename = properties.photo)}} "/>
-    </div>
-    <div class="single-card-body">
-        <h2>{{ properties.title }}</h2>
-        <div class="attributes">
-            <span class="attribute price">${{ properties.price }}</span> <span class="attribute type">{{ properties.typeHA}}</span>
+{% if properties|length > 0 %} 
+    <h1 class="page-header">Properties</h1>
+    <div class="prop-list">
+        {% for property in properties %}
+        <div class="overview-card">
+            <div>
+                <img class='main' src="{{ url_for('get_image', filename = property.photo) }}"/>
+            </div>
+            <div class="card-body">
+                <h5 class="title">{{ property.title }} </h5>
+                <p class="location "><i class="fa fa-map-marker" aria-hidden="true"></i> {{ property.location }}</p>
+                <span class="attribute price">${{ property.price }}</span>
+            </div>
+            <form method='GET' action="{{ url_for('propertyid', propertyid = property.id) }}">
+                <button type="submit" class="btn view-btn">View Property</button>
+            </form>
         </div>
-        <p>{{ properties.description }}</p>
-        <div class="add-tab">
-            <p><i class="fa fa-bed"></i> {{ properties.number_of_bedrooms }} Bedrooms</p>  
-            <p><i class="fa fa-shower"></i> {{ properties.number_of_bathrooms}} Bathrooms</p>
-        </div>
-        <p><i class="fa fa-map-marker" aria-hidden="true"></i> {{ properties.location }}</p>
-
-        <button type="submit" class="btn email-btn">Email Realtor</button>
+        {% endfor %}
     </div>
-
-</div>
+{% else %}
+    <h3>No properties available</h3>
+{% endif %}
 
 {% endblock %}

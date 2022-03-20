@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block main %}
+<ul class='main'>
+	{% for image in image_list %}
+	<div class="picture">
+        <li>
+			<img src="{{ url_for('get_image', filename=image.photo) }}">
+            <h5 class = "title">{{image.title}}</h5>
+            <p class = "loc">{{image.location}}</p>
+            <p class = "price">{{image.price}}</p>
+            <a class="btn btn-primary" class = "btn" href= "{{url_for('getProp',propertyid= prop.id)}}">View Property</a>
+		</li>
+	</div>
+	{% endfor %}	
+</ul>
+{%  endblock %}
