@@ -2,65 +2,26 @@
 
 {% block main %}
 
-<h1 class="form-heading">Add New Property</h1>
+<div class="property-card">
 
-<form class="form" method="POST" action="{{ url_for('property1') }}" enctype="multipart/form-data">
-    
-    {{ form.csrf_token }}
-
-    <div class="form-div">
-        {{ form.title.label(class="form-heading") }}
-        <br>
-        {{ form.title(class="formfield long") }}
+    <div>
+        <img class="single" src="{{ url_for('get_image', filename = properties.photo)}} "/>
     </div>
-
-    <div class="form-div area">
-        {{ form.description.label(class="form-heading") }}
-        <br>
-        {{ form.description(class="formfield long") }}
-    </div>
-
-    <div class="form-div double">
-        <div>
-            {{ form.bedroom.label(class="form-heading", placeholder="3") }}
-            <br>
-            {{ form.bedroom(class="formfield short") }}
+    <div class="single-card-body">
+        <h2>{{ properties.title }}</h2>
+        <div class="attributes">
+            <span class="attribute price">${{ properties.price }}</span> <span class="attribute type">{{ properties.typeHA}}</span>
         </div>
-
-        <div>
-            {{ form.bathroom.label(class="form-heading") }}
-            <br>
-            {{ form.bathroom(class="formfield short", placeholder="2") }}
+        <p>{{ properties.description }}</p>
+        <div class="add-tab">
+            <p><i class="fa fa-bed"></i> {{ properties.number_of_bedrooms }} Bedrooms</p>  
+            <p><i class="fa fa-shower"></i> {{ properties.number_of_bathrooms}} Bathrooms</p>
         </div>
+        <p><i class="fa fa-map-marker" aria-hidden="true"></i> {{ properties.location }}</p>
+
+        <button type="submit" class="btn email-btn">Email Realtor</button>
     </div>
 
-    <div class="form-div double">
-        <div>
-            {{ form.price.label(class="form-heading") }}
-            <br>
-            {{ form.price(class="formfield short") }}
-        </div>
-
-        <div>
-            {{ form.proptype.label(class="form-heading") }}
-            <br>
-            {{ form.proptype(class="formfield short") }}
-        </div>
-    </div>
-
-    <div class="form-div">
-        {{ form.location.label(class="form-heading") }}
-        <br>
-        {{ form.location(class="formfield short") }}
-    </div>
-
-    <div class="form-div">
-        {{ form.photo.label(class="form-heading") }}
-        <br>
-        {{ form.photo(class="formfield short") }}
-    </div>
-
-    <button type="submit" class="btn add">Add Property</button>
-</form>
+</div>
 
 {% endblock %}

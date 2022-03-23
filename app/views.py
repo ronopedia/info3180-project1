@@ -10,7 +10,7 @@ from flask import render_template, request, redirect, url_for, flash, session, a
 from .config import Config
 from werkzeug.utils import secure_filename
 from app.forms import PropertyForm
-from app.model import PropertyInfo
+from app.models import PropertyInfo
 from flask_wtf.csrf import CSRFProtect
 
 
@@ -18,6 +18,9 @@ from flask_wtf.csrf import CSRFProtect
 ###
 # Routing for your application.
 ###
+
+csrf= CSRFProtect(app)
+
 
 @app.route('/')
 def home():
@@ -30,8 +33,8 @@ def about():
     """Render the website's about page."""
     return render_template('about.html', name="Mary Jane")
 
-@app.route('/property', methods=["GET", "POST"])
-def property1():
+@app.route('/properties/create', methods=["GET", "POST"])
+def property():
     form = PropertyForm()
     if request.method == 'POST':
         if form.validate_on_submit():
@@ -43,38 +46,33 @@ def property1():
             proptype = form.proptype.data
             description = form.description.data
             image = form.photo.data
+            
+            filename = secure_filename(image.filename)
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
 
             property = PropertyInfo(title, bedrooms, bathrooms, location, price, proptype, description, filename)
             db.session.add(property)
             db.session.commit()
+        
+        flash('Your property has been uploaded!','success')
+        return redirect(url_for('properties'))   
+    return render_template('propform.html', form=form)
 
-            filename = secure_filename(image.filename)
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-        flash('Your Property Has been Uploaded!','success')
-        return redirect(url_for('properties'))
-            
-    return render_template('property.html', form=form)
 
-@app.route('/properties', methods=['GET'])
+
+@app.route('/properties')
 def properties():
-    #image_list = get_uploaded_images()
-    #return render_template('properties.html', image_list=image_list)
-    properties = PropertyInfo.query.all()
-    if request.method=='GET':
-        return render_template('properties.html', properties=properties)
+    properties = db.session.query(PropertyInfo).all()
+    return render_template('properties.html', properties=properties)
 
 
-@app.route('/property/<propertyid>')
-def propid(propertyid):
-    #root_dir = os.getcwd()
-    #return send_from_directory(os.path.join(root_dir,app.config['UPLOAD_FOLDER']),filename)
-    #properties = db.session.query(PropertyInfo).filter(PropertyInfo.id==propertyid).first()
-    properties = PropertyInfo.query.filter_by(id = propertyid).first()
-    if request.method=='GET':
-        return render_template('property_by_id.html',properties=properties)
+@app.route('/properties/<propertyid>')
+def getProp(propertyid):
+    properties = db.session.query(PropertyInfo).filter_by(id = propertyid).first()
+    return render_template('property.html',properties=properties)
 
 
-@app.route('/upload/<filename>')
+@app.route('/uploads/<filename>')
 def get_image(filename):
     root_dir = os.getcwd()
     return send_from_directory(os.path.join(root_dir, app.config['UPLOAD_FOLDER']), filename)

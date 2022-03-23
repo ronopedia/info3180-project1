@@ -4,7 +4,7 @@
 
 {% include 'flash_messages.html' %}
 
-{% if properties|length > 0 %} 
+
     <h1 class="page-header">Properties</h1>
     <div class="prop-list">
         {% for property in properties %}
@@ -23,8 +23,5 @@
         </div>
         {% endfor %}
     </div>
-{% else %}
-    <h3>No properties available</h3>
-{% endif %}
 
 {% endblock %}
